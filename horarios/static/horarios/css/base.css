@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+
+/* Configuracion General */
+*{
+    padding: 0;
+    margin: 0;
+    font-family: 'Josefin Sans', sans-serif !important;
+    color: #000000;
+}
+.no-bootstrap-style {
+    all: unset;
+    display: block;
+    font-size: inherit;
+    color: inherit;
+    background-color: #F0F2F5;
+}
+
+
+body{
+    background-color: #F0F2F5;
+    display: none;
+}
+body.dark{
+    background-color: #18191A;
+    display: block;
+}
+body:not(.dark) {
+    display: block; /* Muestra el contenido cuando está en modo claro */
+}
+
+.opacidad{
+    padding: 10px;
+}
+.opacidad:hover {
+    background-color: #7e7e7e27;
+    border-radius: 10px;
+}
+
+.sesiones{
+    width: 89%;
+    display: flex;
+    justify-content: center;
+}
+.fc .fc-scrollgrid-liquid {
+    border: none;
+}
+.fc .fc-scrollgrid-section-liquid > td {
+    border: none;
+}
+.fc .fc-toolbar-title {
+    padding: 10px 0px 0px 10px;
+}
+.Nav{
+    display: flex;
+    height: 60px;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: #F0F2F5;
+    z-index: 2;
+}
+body.dark .Nav{
+    background-color: #18191A;
+} 
+body.dark .Nav .Forma .Forma h1{
+    color: #ECECEC;
+}
+body.dark .Nav .Forma .Forma .logo{
+    color: #ECECEC;
+}
+body.dark .Nav .iconos a{
+    color: #ECECEC;
+}
+body.dark .Nav .sesion .sesiones{
+    color: #ECECEC;
+}
+body.dark .Nav .sesion_configuracion{
+    background-color: rgb(36, 37, 38);
+    z-index: 5;
+}
+body.dark .Nav .sesion_configuracion a{
+    color: #ECECEC;
+}
+body.dark .Nav .sesion p{
+    color: #ECECEC;
+}
+body.dark .Nav .sesion_configuracion .formulario_de_aspectos label p{
+    color: #ECECEC;
+}
+.Forma{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+.Forma h1{
+    padding-top: 10px;
+    color: black;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 0px;
+}
+.back{
+    width: 40px;
+}
+.logo{
+    width: 50px;
+}
+.logo-lata-gemini{
+    width: 53px !important;
+}
+.iconos{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+.iconos i{
+    color: #000;
+}
+.icono{
+    width: 40px;
+}
+#Layer_1{
+    cursor: pointer;
+}
+
+.sesion{
+    display: flex;
+    gap: 20px;
+    margin-right: 20px;
+    justify-content: center;
+    align-items: center;
+}
+.sesion svg{
+    width: 35px;
+}
+.sesion_configuracion{
+    min-width: 130px;
+    position: absolute;
+    top: 40px;
+    right: 0px;
+    background-color: white;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+    border-radius: 10px;
+}
+.flex{
+    display: flex;
+}
+.sesion a{
+    text-decoration: none;
+    color: black;
+}
+.sesion p{
+    color: black;
+    font-size: 1.3em;
+}
+
+.messages{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+}
+.mensaje_correcto{
+    background-color: #fff9a3;
+}
+.mensaje_error{
+    background-color: #ffa3a3;
+}
+.messages li{
+    color: black;
+}
+
+p{
+    margin: 0px !important;
+}
+.scrolled {
+    transform: translateY(-100%);
+    transition: transform 0.3s ease; /* Agregamos una transición */
+}
+
+.scrolled.visible {
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+}
+
+.switch span img{
+    width: 20px;
+}
+.Aspecto{
+    background-color: transparent;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.Aspecto svg{
+    width: 35px;
+    height: 35px;
+}
+.Aspecto p{
+    font-size: 1.2em;
+}
+body.dark .Aspecto p{
+    color: white;
+}
+.aspecto_opciones{
+    display: none;
+    z-index: 3;
+}
+.formulario_de_aspectos {
+    margin-top: 30px;
+    padding-top: 8px;
+    display: flex;
+    flex-direction: column;
+}
+.formulario_de_aspectos label{
+    display: flex;
+    align-items: center;
+}
+.formulario_de_aspectos label p{
+    font-size: 1.2em;
+}
+.right{
+    position: relative;
+    right: -10px;
+    bottom: -5px;
+}
+.left{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    padding: 5px !important;
+}
+#right_opciones{
+    cursor: pointer;
+}
+.none{
+    display: none;
+}
+
+@media (max-width: 500px) {
+    .Nav{
+        height: 45px;
+    }
+    .logo{
+        width: 40px;
+    }
+    .Forma h1{
+        display: none;
+    }
+    .iconos{
+        gap: 20px;
+    }
+    .icono{
+        width: 30px;
+    }
+    .logo-lata-gemini{
+        width: 30px !important;
+    }
+    .sesion{
+        gap: 5px;
+        margin-right: 0px;
+    }
+    .sesion a{
+        font-size: 0.9em;
+    }
+    .sesion p{
+        font-size: 0.9em;
+        display: none;
+    }
+    .sesion svg{
+        width: 30px;
+    }
+    #enlace_registro{
+        display: none;
+    }
+
+}

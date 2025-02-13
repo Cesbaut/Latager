@@ -1,0 +1,58 @@
+
+{% load crispy_forms_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latager</title>
+    <link rel="icon" href="{% static 'horarios/img/lata.svg'%}">
+    <link href="{% static 'horarios/css/Login.css' %}" rel="stylesheet">
+</head>
+<body>
+    
+    <div class="Logos">
+        <svg id="Logo-Img" version="1.0" xmlns="http://www.w3.org/2000/svg"
+        width="400px" height="400px" viewBox="0 0 50.000000 50.000000"
+        preserveAspectRatio="xMidYMid meet" class="logo">
+            <g id="logo" class="icono_fill" transform="translate(0.000000,50.000000) scale(0.100000,-0.100000)"
+            fill="#000000" stroke="none">
+            <path d="M130 457 c0 -13 -7 -32 -15 -43 -11 -15 -14 -55 -15 -190 0 -215 -8
+            -204 152 -204 155 0 148 -10 148 206 -1 133 -4 173 -15 188 -8 11 -15 30 -15
+            43 0 23 -1 23 -120 23 -119 0 -120 0 -120 -23z m216 -44 c7 -10 14 -21 14 -25
+            0 -5 -38 -8 -85 -8 -50 0 -85 -4 -85 -10 0 -6 38 -10 95 -10 l96 0 -3 -142 -3
+            -143 -92 -3 c-51 -1 -93 -7 -93 -12 0 -5 35 -11 78 -13 76 -3 75 -3 -18 -4
+            -52 -1 -89 1 -82 4 21 8 13 22 -15 25 l-28 3 -3 143 -3 142 31 0 c16 0 30 5
+            30 10 0 6 -9 10 -20 10 -23 0 -24 3 -8 30 11 17 24 20 97 20 68 0 86 -3 97
+            -17z"/>
+            </g>
+        </svg>
+        <p id="Logo-Text">Latager</p>
+        <!-- <p style="font-size: .3em; padding-top: 25px;">Tu derecho a una opinion libre</p> -->
+    </div>
+    <div class="CajaTodo">
+        <form action="{% url 'logear' %}" method="post" class="Formulario_Inicio">
+            {% csrf_token %}
+        
+            <div class="formulario-registro">
+                {{formas|crispy}}
+                
+                {% if messages %}
+                    {% for mensaje in messages %}
+                        <span style="background-color: rgb(233, 79, 79);">{{mensaje}}</span> <br>
+                    {% endfor %}
+                {% endif %}
+                <button type="submit" class="boton-registrarse">Inicia Sesion</button>
+            </div>   
+        </form>
+        <div class="opcion-regitro">
+            <p>¿No tienes cuenta? <a href="{% url 'Autenticacion' %}">Registrate</a></p>
+        </div>
+    </div>
+    
+</body>
+</html>
+<script src="{% static 'autenticacion/js/login.js' %}"></script>
+

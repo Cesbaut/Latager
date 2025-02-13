@@ -1,0 +1,340 @@
+:root{
+    --color-amarillo: #ffffb6;
+    --color-rojo: #ff6f6f;
+    --color-rojo-liso: #ffadad;
+    --color-azul: #b6f9ff;
+}
+
+
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 85vh;
+}
+#calendar{
+    width: 100%;
+    height: 90%;
+    
+}
+.calendario{
+    width: 70%;
+    padding: 30px;
+    height: 80vh;
+    background-color: white;
+    border-radius: 30px;
+    transition: box-shadow 0.3s ease;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+
+}
+.calendario:hover{
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.fc .fc-toolbar.fc-header-toolbar {
+    display: none;
+}
+
+/* Selecciona todos los días en la vista y oculta los domingos */
+.fc-day-sun {
+    display: none;
+  }
+  
+  /* Alternativamente, puedes hacer que los domingos sean invisibles en la vista de agenda */
+  .fc-col-header-cell.fc-day-header.fc-day-sun {
+    display: none;
+  }
+  
+
+.busqueda{
+    width: 30%;
+    height: 80vh;
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 30px;
+    transition: box-shadow 0.3s ease;
+    margin: 20px;
+    overflow-y: auto; /* Activar scroll vertical */
+    box-sizing: border-box;
+}
+.busqueda:hover{
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.inputRadio{
+    background-color: rgb(182, 255, 255);
+}
+#numberField{
+    width: 50px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border: 1px solid black;
+
+}
+#textField{
+    border: 1px solid black;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+#form_materia{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.infoMaterias{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 5px;
+}
+.titulos{
+    display: flex;
+    gap: 55px;
+}
+.opcMaterias{
+    display: flex;
+    max-width: 100%;
+    gap: 2px;
+    width: 100%;
+    
+}
+.opcMaterias div{
+    display: flex;
+    gap: 5px;
+    
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+.Boton{
+    background-color: rgb(182, 255, 255);
+    border: none;
+    margin: auto;
+    height: 25px;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+.materias{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+.materia{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 5px;
+    margin: 3px;
+    height: 30px;
+    border-radius: 10px;
+}
+.criterios{
+    margin-top: 20px;
+}
+.lista_de_criterios{
+    margin-top: 5px;
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+}
+.lista_de_criterios div{
+    display: flex;
+    gap: 5px;
+}
+.lista_de_criterios div input{
+    width: 17px;
+    height: 17px;
+}
+
+.fc-timegrid-event-harness > .fc-timegrid-event {
+    border: none;
+}
+
+#Noticias{
+    width: 100%;
+    height: 30px;
+    display: none;
+    background-color: var(--color-amarillo);
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+}
+
+
+
+.btn-danger{
+    width: 2em;
+    height: 2em;
+    background-color: transparent;
+    border: none;
+}
+.btn-danger:hover{
+    background-color: var(--color-rojo);
+    border-radius: 50%;
+    cursor: pointer;
+}
+.btn-danger img{
+    width: 100%;
+    height: 100%;
+}
+
+.btn-groups{
+    width: 2em;
+    height: 2em;
+    background-color: transparent;
+    border: none;
+}
+.btn-groups:hover{
+    background-color: var(--color-amarillo);
+    border-radius: 50%;
+    cursor: pointer;
+}
+.btn-groups img{
+    width: 100%;
+    height: 100%;
+}
+
+.materia p{
+    width: 80%;
+}
+.btns{
+    display: flex;
+    justify-content: right;
+    gap: 5px;
+    width: 20%;
+}
+
+.div-captions{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    margin-bottom: 7px;
+}
+
+.btns-materia{
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border: none;
+}
+.btns-materia img{
+    width: 100%;
+    height: 100%;
+}
+.div-captions h2{
+    font-size: 1em;
+    text-align: center;
+    padding: 0px 8px;
+    width: 90%;
+}
+#btn-regresar{
+    border-radius: 50%;
+}
+#btn-regresar:hover{
+    background-color: var(--color-amarillo);
+}
+#btn-actualizar{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+#btn-actualizar:hover{
+    background-color: var(--color-azul);
+}
+#Subir{
+    background-color: var(--color-amarillo);
+}
+
+.tooltip-event {
+    font-size: 14px;
+    color: #333;
+    max-width: 200px;
+    word-wrap: break-word;
+    pointer-events: none;
+  }
+  
+
+table {
+    min-height: 100%;
+    max-width: 100%;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75em; /* Reducir tamaño de fuente */
+  }
+  
+  table th, table td {
+    border: 1px solid rgba(48, 48, 48, 0.268);
+    padding: 3px 2px; /* Reducir márgenes internos */
+    text-align: center;
+    word-wrap: break-word; /* Forzar salto de línea si es necesario */
+  }
+  table tr{
+    border-radius: 20px;
+
+  }
+  /* caption{
+    font-weight: bold;
+    font-size: 1.5em;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    width: 80%;
+  } */
+
+  tr{
+    border-radius: 20px;
+  }
+  tr.sin-cupo {
+    background-color: var(--color-rojo-liso); /* Opcional: Color para filas sin cupo */
+  }
+
+
+  #informacionGrupos{
+    display: none;
+    padding: 10px;
+  }
+
+  .btn-add{
+    cursor: pointer;
+  }
+  .btn-add img{
+    width: 70%;
+    height: 70%;
+  }
+  .btn-add:hover{
+    background-color: var(--color-amarillo);
+  }
+
+
+
+.save{
+    height: 10%;
+    display: flex;
+    margin-top: 10px;
+    gap: 20px;
+}
+.SaveButton{
+    background-color: var(--color-azul);
+    border: none;
+    width: 70px;
+    height: 40px;
+    border-radius: 10px;
+    z-index: 2;
+    cursor: pointer;
+}
+.mensajeSave{
+    display: none;
+    background-color: var(--color-amarillo);
+    min-width: 70px;
+    height: 40px;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 5px;
+}

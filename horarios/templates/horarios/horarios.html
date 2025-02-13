@@ -1,0 +1,116 @@
+{% extends "horarios/base.html" %}
+
+{% load static %}
+
+
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'horarios/css/horarios.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js'></script>
+<main>
+    <div class="info calendario large">
+        <div class="calendarios">
+            <p>Calendario 1
+            </p>
+        </div>
+        <section class="" id="calendar">
+        </section>
+        <div class="save">
+            <button class="SaveButton" onclick="gruposUsuario1.guardarGrupos()">Guardar</button>
+            <div class="mensajeSave" id="mensajeSave"></div>
+        </div>
+    </div>
+    <section class="busqueda" id="informacionGrupos">
+    </section>
+    <section class="busqueda" id="busqueda">
+        <h1>Agrega materias:</h1>
+        <div >
+            
+            <form id="form_materia" method="POST">
+                {% csrf_token %}
+                <div class="titulos">
+                    <p>Clave</p>
+                    <p>Nombre</p>
+                </div>
+                <div class="opcMaterias">
+                    <div>
+                        <input type="radio" class="inputRadio" id="numberRadio" name="tipoBusqueda" value="numero">
+                        <input type="number" id="numberField" name="numero">
+                    </div>
+                    <div>
+                        <input type="radio" class="inputRadio" id="textRadio" name="tipoBusqueda" value="cadena">
+                        <input type="text" id="textField" name="cadena">
+                    </div>
+                    <button type="submit" class="Boton" id="NewTask">Buscar</button>
+                </div>
+            </form>
+            <div class="infoMaterias">
+                <div id="Noticias"></div>
+                <div class="materias sortable" id="materiasID">
+                    
+                </div>
+                {% comment %} <div class="criterios">
+                    <h1>Criterios:</h1>
+                    <label class="lista_de_criterios">
+                        <div>
+                            <input type="checkbox" name="" value="">
+                            <p>Calificacion de Profesor</p>
+                        </div>
+                        <div>
+                            <input type="checkbox" name="" value="">
+                            <p>Por horario</p>
+                        </div>
+                        <div>
+                            <input type="checkbox" name="" value="">
+                            <p>Por prioridad de materias</p>
+                        </div>
+                        <div>
+                            <input type="checkbox" name="" value="">
+                            <p>Por dias de la semana</p>
+                        </div>
+                    </label>
+                </div> {% endcomment %}
+            </div>   
+            
+        </div>
+    </section>
+</main>
+<script>
+    let gruposUsuario = []
+    if('{{ grupos_data|safe }}' !== "[]"){
+
+        gruposUsuario ={{grupos_data|safe}}
+    }
+
+
+    let materias = {};
+
+    if ('{{ materias_data|safe }}' !== "[]" && '{{ materias_data|safe }}') { 
+        try {
+
+            // Parsear los datos JSON
+            var materiasArray = JSON.parse('{{ materias_data|safe }}');
+
+            // Convertir el array en un objeto con la clave de la materia como key
+            materiasArray.forEach(item => {
+                materias[item.materia.clave] = {
+                    materia: item.materia,
+                    grupos: item.grupos
+                };
+            });
+
+        } catch (error) {
+            console.error("Error al parsear los datos JSON:", error);
+        }
+    } else {
+        console.log("No hay materias disponibles.");
+    }
+
+
+</script>
+
+<script src="{% static 'horarios/js/horarios.js' %}"></script>
+{% endblock %}
