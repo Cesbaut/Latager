@@ -15,9 +15,6 @@ asignatura['840'] = 'SISTEMAS OPERATIVOS'
 asignatura['1645'] = 'DISEÑO DIGITAL MODERNO'
 asignatura['1644'] = 'BASES DE DATOS'
 asignatura['1643'] = 'ADMINISTRACION DE PROYECTOS DE SOFTWARE'
-asignatura['1433'] = 'ANALISIS NUMERICO'
-asignatura['138'] = 'DISPOSITIVOS ELECTRONICOS'
-asignatura['5138'] = 'LAB. DISPOSITIVOS ELECTRONICOS'
 asignatura['442'] = 'LENGUAJES FORMALES Y AUTOMATAS'
 asignatura['1531'] = 'INGENIERIA DE SOFTWARE'
 asignatura['1537'] = 'FINANZAS EN LA INGENIERIA EN COMPUTACION'
@@ -30,10 +27,16 @@ asignatura['434'] = 'COMPILADORES'
 asignatura['1686'] = 'SISTEMAS DE COMUNICACIONES'
 asignatura['6686'] = 'LAB. SISTEMAS DE COMUNICACIONES'
 asignatura['1413'] = 'INTRODUCCION A LA ECONOMIA'
+asignatura['6645'] = 'LAB. DISEÑO DIGITAL MODERNO'
+asignatura['6473'] = 'LAB. SEÑALES Y SISTEMAS'
 
 try:
     for key in asignatura:
-        Materia.objects.create(clave=key, nombre=asignatura[key])  # Asegúrate de que 'clave' y 'nombre' sean los nombres de los campos en tu modelo
-    print("Materias subidas con éxito")
+        materia, creada = Materia.objects.get_or_create(clave=key, defaults={"nombre": asignatura[key]})
+        if creada:
+            print(f"Materia '{asignatura[key]}' creada.")
+        else:
+            print(f"Materia '{asignatura[key]}' ya existía.")
+    print("Proceso completado.")
 except Exception as e:
-    print("Error al subir materias :(", e)
+    print("Error al subir materias:", e)

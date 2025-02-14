@@ -76,7 +76,8 @@ def inicio(numero):
                     tipo=texto_celdas[3],
                     horas=texto_celdas[4],
                     dias=texto_celdas[5],
-                    cupo=int(texto_celdas[6]),
+                    salon=texto_celdas[6],
+                    cupo=int(texto_celdas[7]),
                     calificacion=calificacionProfesor(texto_celdas[2])
                 )
                 print("grupo agregado con exito")

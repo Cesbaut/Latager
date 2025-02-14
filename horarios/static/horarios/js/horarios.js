@@ -69,7 +69,7 @@ class grupoCalendario{
 
   async guardarGrupos() {
     try {
-      const response = await fetch('/horarios/guardarGrupos/', {
+      const response = await fetch('/guardarGrupos/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -274,7 +274,7 @@ function obtenerEventosCalendario() {
 //Funcion para eliminar una materia de un usuario
 async function eliminarMateria(clave) {
   try {
-    const response = await fetch('/horarios/deleteMateriaUsuario/', {
+    const response = await fetch('/deleteMateriaUsuario/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -420,7 +420,7 @@ form_materia.addEventListener('submit',async (event) => {
 // Función que se llama al hacer clic en el botón
 async function actualizar(materia_clave) {
   try {
-    const response = await fetch(`/horarios/actualizarMateria/${materia_clave}/`, {
+    const response = await fetch(`/actualizarMateria/${materia_clave}/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -495,7 +495,7 @@ function mensajeErrorGuardado(mensaje){
 // Función para obtener los datos de una materia y sus grupos
 async function MateriayGrupo(tipoBusqueda, numero, cadena, csrfmiddlewaretoken) {
   try {
-    const response = await fetch('/horarios/formulario_maestros/', {
+    const response = await fetch('/formulario_maestros/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
