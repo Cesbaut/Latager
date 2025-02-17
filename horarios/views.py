@@ -18,6 +18,34 @@ import re
     
 # Pagina principal de horarios, manda los grupos y materias que un usuario autenticado a guardado
 def horarios(request):
+    # import requests
+    # from bs4 import BeautifulSoup
+
+    # # URL de la página
+    # url = "https://www.ssa.ingenieria.unam.mx/cj/tmp/programacion_horarios/1414.html"
+
+    # # Simular un navegador con un User-Agent válido
+    # headers = {
+    #     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
+    # }
+
+    # # Hacer la petición GET
+    # response = requests.get(url, headers=headers)
+
+    # # Verificar si la solicitud fue exitosa (código 200)
+    # if response.status_code == 200:
+    #     # Analizar el HTML con BeautifulSoup
+    #     soup = BeautifulSoup(response.text, "html.parser")
+
+    #     # Imprimir el HTML completo (opcional)
+    #     print(soup.prettify())
+
+    #     # Si quieres obtener solo el texto sin etiquetas HTML
+    #     print(soup.get_text())
+
+    # else:
+    #     print(f"Error {response.status_code}: No se pudo acceder a la página")
+
     if request.user.is_authenticated:
         try:
             materias_encontradas = MateriasAlumno.objects.filter(alumno=request.user).values_list('materias', flat=True)
@@ -202,6 +230,9 @@ def actualizarMateria(request, id):
                     grupo_existente.dias=texto_celdas[5]
                     grupo_existente.salon=texto_celdas[6]
                     grupo_existente.cupo=int(texto_celdas[8])
+                    print(f"Calificacion: {calificacionProfesor(texto_celdas[2])}")
+                    if(grupo_existente.calificacion == 0.0):
+                        grupo_existente.calificacion = calificacionProfesor(texto_celdas[2])
                     grupo_existente.save()  
                     print(f"Cupo actualizado para el grupo {texto_celdas[1]} de {materia.nombre}.")
                 else:
@@ -220,7 +251,16 @@ def actualizarMateria(request, id):
             except Exception as e:
                 print(f"Error al procesar la clase: {e}")
                 continue
-        return redirect('horarios')
+        materia_data = {
+                        'clave': materia.clave,
+                        'nombre': materia.nombre,
+                        'color': materia.color.color,
+                    }
+        grupos = Grupo.objects.filter(materia=materia)
+        grupos_data = list(grupos.values())
+        materiaNueva = {id: {'grupos': grupos_data, 'materia': materia_data}}
+        driver.quit()
+        return JsonResponse({'message': 'Materia Actualizada', 'materiaNueva': materiaNueva})
     except Materia.DoesNotExist:
         print(f"No se encontró la materia con clave {id}")
         return redirect('horarios')

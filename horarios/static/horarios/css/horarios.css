@@ -245,6 +245,11 @@ main{
     height: 35px;
     border-radius: 50%;
 }
+#btn-actualizar-img{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
 #btn-actualizar:hover{
     background-color: var(--color-azul);
 }
