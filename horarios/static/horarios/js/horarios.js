@@ -8,6 +8,7 @@ let gruposUsuario1;
 // ***** AL INICIAR LA PAGINA *****
 document.addEventListener('DOMContentLoaded', function() {
   console.log(materias)
+
   actualizarMaterias(); 
   gruposUsuario1 = new grupoCalendario(gruposUsuario)
   console.log(gruposUsuario1.datos)
@@ -328,7 +329,8 @@ function mostrarGrupos(ClaveMateria){
     </button>
     <h2>${materias[ClaveMateria].materia.nombre}</h2>
     <button id="btn-actualizar" class="btns-materia" onclick="actualizar(${ClaveMateria})">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAABeklEQVR4nO2Wy0rDQBSGP3eK4loIXqGozyJ00SIi+AJq1Y2ij1LQnaBILSgUfRMF17r20oJoGyMDf2AI2s6kLQHNB9mEOSd/5lwhJ8ePaaAC3AL3QAt4B5707gCYYQgEwDHQAaIeTxs4lc1AKAJvcv4BXADrwCIwDowCc8AqcKYz5uwrULb8xAK92AFCGdaBBQcbE4JL2XwBW2kFFPXxULH1ZVe2RkTJV0BgXXuaj8fsycezr4AT69r7pZ5IUqdS6yiZXGL+E92qpCcVHTTZThYCbnTQlFomPEhAISsBTQmY4A8xaXXHTFiSgLusBGxIQGPoJfQLNdlvkoGAAvCpMe00oiPr6bcVjwDX8lV1NYoSA8RMtbQcyccLMOUroKRRGqYQYf780BrnKz7GkRXvbYmItGTMOsb8SjahfHgRJRKurAYSr2TnwBowD4ypYy6r1GpKuPjavf68G4EWzbbjUlr1ibkPZt/b18R81EreVIdrqM4Htg3n/A++AU4FopJxPo3xAAAAAElFTkSuQmCC" alt="available-updates">    </button>
+      <img id="btn-actualizar-imagen" src="/static/horarios/img/reload.svg" alt="available-updates">    
+    </button>
   </div>
   <table>
         <thead>
@@ -417,8 +419,12 @@ form_materia.addEventListener('submit',async (event) => {
   } 
 });
 
-// Función que se llama al hacer clic en el botón
+// Función para actualizr una materia
 async function actualizar(materia_clave) {
+  let btn_actualizar_imagen = document.getElementById("btn-actualizar-imagen")
+  const imagenOriginal = btn_actualizar_imagen.src;
+  const nuevaImagen = "/static/horarios/img/reloadGIF2.gif"; 
+  btn_actualizar_imagen.src = nuevaImagen;
   try {
     const response = await fetch(`/actualizarMateria/${materia_clave}/`, {
       method: 'POST',
@@ -427,13 +433,21 @@ async function actualizar(materia_clave) {
         'X-CSRFToken': csrfmiddlewaretoken  
       },
     });
-
+    const data = await response.json();
     if (response.ok) {
       console.log("Materia actualizada correctamente.");
-      window.location.reload();  
+      console.log(data);
+      const id = Object.keys(data.materiaNueva)[0]; // "1645"
+      const idNumber = Number(id); // 1645 (convertido a número)
+      console.log(idNumber);
+      materias[idNumber] = data.materiaNueva[id];
+      console.log(materias)
+      mostrarGrupos(materia_clave)
+
     } else {
       console.error("Error al actualizar la materia.");
     }
+    btn_actualizar_imagen.src = imagenOriginal;
   } catch (error) {
     console.error("Error en la solicitud:", error);
   }
