@@ -187,7 +187,7 @@ def actualizarMateria(request, id):
         if not table:
             return JsonResponse({'message': 'No se encontró la tabla de horarios.'}, status=404)
 
-        tbodies = table.find_all('tbody')[1:]
+        tbodies = table.find_all('tbody')
 
         grupos_actualizados = []
 
@@ -238,17 +238,6 @@ def actualizarMateria(request, id):
                         )
                         print(f"Se añadió el grupo {texto_celdas[1]} de {materia.nombre}.")
 
-                    grupos_actualizados.append({
-                        'grupo': grupo_existente.grupo,
-                        'nombre': grupo_existente.nombre,
-                        'tipo': grupo_existente.tipo,
-                        'horas': grupo_existente.horas,
-                        'dias': grupo_existente.dias,
-                        'salon': grupo_existente.salon,
-                        'cupo': grupo_existente.cupo,
-                        'calificacion': grupo_existente.calificacion,
-                    })
-
                 except Exception as e:
                     print(f"Error al procesar la clase: {e}")
                     continue
@@ -258,6 +247,7 @@ def actualizarMateria(request, id):
             'nombre': materia.nombre,
             'color': materia.color.color,
         }
+        grupos_actualizados = list(Grupo.objects.filter(materia=materia).values())
 
         materiaNueva = {id: {'grupos': grupos_actualizados, 'materia': materia_data}}
 
