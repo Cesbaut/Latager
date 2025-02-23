@@ -141,9 +141,6 @@ env.bak/
 venv.bak/
 
 
-latager/settings.py
-
-
 # Spyder project settings
 .spyderproject
 .spyproject

@@ -66,6 +66,14 @@ class grupoCalendario{
     console.log(materia, grupo);
     
     this._gruposUsuario = this._gruposUsuario.filter(p => !(p.materia == materia && p.grupo_id == grupo));
+
+    calendar.getEvents().forEach(event => {
+      console.log(event.extendedProps);
+      if ((event.extendedProps.grupo_id == grupo)&&(event.extendedProps.clave==materia)) {
+        event.remove();
+      }
+    });
+    console.log(this._gruposUsuario)
   }
 
   async guardarGrupos() {
@@ -219,19 +227,11 @@ var calendar = new FullCalendar.Calendar(calendarEl, {
     });
 
     info.el.addEventListener('dblclick', function() {
-      info.event.remove();
       gruposUsuario1.eliminarGrupo(info.event.extendedProps.clave, info.event.extendedProps.grupo_id)
-      console.log(gruposUsuario1.datos)
       tooltip.remove();
-       const grupo = info.event.extendedProps.grupo;
-       const nombre = info.event.extendedProps.nombre;
-       const horas = info.event.extendedProps.horas;
-        
-       calendar.getEvents().forEach(event => {
-         if ((event.extendedProps.grupo == grupo)&&(event.extendedProps.nombre==nombre)&&(event.extendedProps.horas==horas)) {
-           event.remove();
-         }
-       });
+      if (informacionGrupos.style.display == 'flex'){
+        mostrarGrupos(info.event.extendedProps.clave)
+      }
     });
   }
   
@@ -352,6 +352,21 @@ function mostrarGrupos(ClaveMateria){
     </table>
     `
     for (let grupo of materias[ClaveMateria].grupos) {
+      console.log(grupo.grupo)
+      if (gruposUsuario1.datos.some(item => item.grupo_id === grupo.id)){
+        SubirStatus = `<td class="btn-status" 
+                        onclick="gruposUsuario1.eliminarGrupo(${materias[ClaveMateria].materia.clave}, ${grupo.id}); mostrarGrupos(${ClaveMateria})">
+                          <img src="/static/horarios/img/palomita.svg" alt="" srcset="">
+                      </td>`
+      }
+      else{
+        SubirStatus = `<td class="btn-add" 
+                        data-grupo='${JSON.stringify(grupo).replace(/'/g, '&#39;')}' 
+                        data-materia='${JSON.stringify(materias[ClaveMateria].materia).replace(/'/g, '&#39;')}' 
+                        onclick="agregarEventoDesdeHTML(this), mostrarGrupos(${ClaveMateria})">
+                          <img src="/static/horarios/img/right_info.png" alt="" srcset="">
+                      </td>`
+      }
       let infoGrupo = document.querySelector('#infoGrupo');
       infoGrupo.innerHTML += `<tr class="${grupo.cupo > 0 ? 'con-cupo' : 'sin-cupo'}">
                                 <td>${grupo.grupo}</td>
@@ -362,12 +377,7 @@ function mostrarGrupos(ClaveMateria){
                                 <td>${grupo.salon}</td>
                                 <td>${grupo.cupo}</td>
                                 <td>${grupo.calificacion}</td>
-                                <td class="btn-add" 
-                                data-grupo='${JSON.stringify(grupo).replace(/'/g, '&#39;')}' 
-                                data-materia='${JSON.stringify(materias[ClaveMateria].materia).replace(/'/g, '&#39;')}' 
-                                onclick="agregarEventoDesdeHTML(this)">
-                                  <img src="/static/horarios/img/right_info.png" alt="" srcset="">
-                                </td>
+                                ${SubirStatus}
                               </tr>`
     }
     informacionGrupos.innerHTML += `

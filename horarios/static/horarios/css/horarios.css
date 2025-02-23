@@ -3,6 +3,7 @@
     --color-rojo: #ff6f6f;
     --color-rojo-liso: #ffadad;
     --color-azul: #b6f9ff;
+    --color-verde: #b6ffad;
 }
 
 
@@ -315,6 +316,22 @@ table {
   .btn-add:hover{
     background-color: var(--color-amarillo);
   }
+
+  .btn-status{
+    cursor: pointer;
+    background-color: var(--color-verde);
+  }
+  .btn-status img{
+    width: 70%;
+    height: 70%;
+  }
+.btn-status:hover{
+    background-color: var(--color-rojo);
+}
+.btn-status:hover img {
+    content: url("/static/horarios/img/delete.svg"); /* Cambia la imagen */
+}
+
 
 
 
