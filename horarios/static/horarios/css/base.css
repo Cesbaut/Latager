@@ -58,7 +58,6 @@ body:not(.dark) {
     position: sticky;
     top: 0;
     background-color: #F0F2F5;
-    z-index: 2;
 }
 body.dark .Nav{
     background-color: #18191A;

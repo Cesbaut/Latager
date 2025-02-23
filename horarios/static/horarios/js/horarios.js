@@ -296,15 +296,31 @@ async function eliminarMateria(clave) {
   }
 }
 
+
+modalEliminar = (nombre, clave)=> openModal(`
+  <div>
+    <h2>¿Estas seguro de eliminar ${nombre}?</h2>
+    <p>Esta acción tambien eliminara los grupos añadidos de esta materia</p>
+  </div>
+  <div>
+    <button class="boton-gris" onclick="closeModal()">
+      Cancelar
+    </button>
+    <button class="boton-rojo" onclick="eliminarMateria('${clave}')">
+      Eliminar
+    </button>
+  </div>
+  `);
 //Funcion para actualizar las materias
 function actualizarMaterias(){
   materiasID.innerHTML = '';
   for (let key in materias) {
     const materia = materias[key].materia;
+    
     materiasID.innerHTML += `<div class="materia materia-item" style="background-color: ${materia.color};">
                               <p>${materia.nombre}</p>
                               <div class="btns">
-                                <button class="btn-danger" onclick="eliminarMateria('${materia.clave}')">
+                                <button class="btn-danger" onclick="modalEliminar('${materia.nombre}', '${materia.clave}')">
                                   <img class="imagen imagen1" src="/static/horarios/img/delete.svg" alt="">
                                 </button>
                                 <button class="btn-groups" onclick="mostrarGrupos('${materia.clave}')">
@@ -539,3 +555,35 @@ async function MateriayGrupo(tipoBusqueda, numero, cadena, csrfmiddlewaretoken) 
     throw error;
   }
 }
+
+
+
+// ***** MODAL *****
+const modal = document.querySelector(".modal");
+const overlay = document.querySelector(".overlay");
+const openModalBtn = document.querySelector(".btn-open");
+const informacionModal = document.getElementById("informacionModal"); 
+
+// Cerrar modal
+const closeModal = function () {
+  modal.classList.add("hidden");
+  overlay.classList.add("hidden");
+};
+overlay.addEventListener("click", closeModal);
+
+// Cerrar en Esc
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+    closeModal();
+  }
+});
+
+// Abrir modal
+const openModal = function ( text ) {
+  modal.classList.remove("hidden");
+  overlay.classList.remove("hidden");
+  informacionModal.innerHTML = text;
+};
+
+
+
