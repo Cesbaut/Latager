@@ -6,29 +6,29 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'latager.settings')
 django.setup()
 
 from horarios.models import Materia
+from horarios.scripts.listaAsignatura import asignatura
 
-asignatura = {}
+from horarios.models import Color  # Ajusta "app" con el nombre de tu aplicación en Django
 
-asignatura['1414'] = 'ELECTRICIDAD Y MAGNETISMO'
-asignatura['1473'] = 'SEÑALES Y SISTEMAS'
-asignatura['840'] = 'SISTEMAS OPERATIVOS'
-asignatura['1645'] = 'DISEÑO DIGITAL MODERNO'
-asignatura['1644'] = 'BASES DE DATOS'
-asignatura['1643'] = 'ADMINISTRACION DE PROYECTOS DE SOFTWARE'
-asignatura['442'] = 'LENGUAJES FORMALES Y AUTOMATAS'
-asignatura['1531'] = 'INGENIERIA DE SOFTWARE'
-asignatura['1537'] = 'FINANZAS EN LA INGENIERIA EN COMPUTACION'
-asignatura['1535'] = 'DISEÑO DIGITAL VLSI'
-asignatura['1562'] = 'CIRCUITOS ELECTRICOS'
-asignatura['6644'] = 'LAB. BASES DE DATOS'
-asignatura['6562'] = 'LAB. CIRCUITOS ELECTRICOS'
-asignatura['406'] = 'INTELIGENCIA ARTIFICIAL'
-asignatura['434'] = 'COMPILADORES'
-asignatura['1686'] = 'SISTEMAS DE COMUNICACIONES'
-asignatura['6686'] = 'LAB. SISTEMAS DE COMUNICACIONES'
-asignatura['1413'] = 'INTRODUCCION A LA ECONOMIA'
-asignatura['6645'] = 'LAB. DISEÑO DIGITAL MODERNO'
-asignatura['6473'] = 'LAB. SEÑALES Y SISTEMAS'
+# Lista de colores con nombres sugeridos
+colores = [
+    {"nombre": "Rosa", "color": "#FFD1DC"},
+    {"nombre": "Azul", "color": "#ADD8E6"},
+    {"nombre": "Verde", "color": "#b7fadf"},
+    {"nombre": "Amarillo", "color": "#FFFFE0"},
+    {"nombre": "Lavanda", "color": "#E6E6FA"},
+    {"nombre": "Melocoton", "color": "#FFE5B4"},
+    {"nombre": "Rojo", "color": "#fcb7af"},
+]
+
+# Guardar solo los colores que no existen en la base de datos
+for c in colores:
+    if not Color.objects.filter(color=c["color"]).exists():
+        Color.objects.create(nombre=c["nombre"], color=c["color"])
+        print(f"Color {c['nombre']} ({c['color']}) guardado en la base de datos.")
+    else:
+        print(f"Color {c['nombre']} ({c['color']}) ya existe en la base de datos.")
+
 
 try:
     for key in asignatura:
