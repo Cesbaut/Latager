@@ -286,9 +286,19 @@ async function eliminarMateria(clave) {
       })
     });
     const data = await response.json();
-    delete materias[clave];
-    actualizarMaterias();
-    mensajeExito('Materia eliminada con éxito')
+    if (data.message == 'Materia eliminada') {
+      console.log(gruposUsuario1.datos)
+      const grupos = gruposUsuario1.datos
+        .filter(item => item.materia == clave)
+        .map(item => item.grupo_id);
+      console.log(grupos)
+      grupos.forEach(grupo => gruposUsuario1.eliminarGrupo(clave, grupo));
+      gruposUsuario1.guardarGrupos();
+      console.log(gruposUsuario1.datos)
+      delete materias[clave];
+      actualizarMaterias();
+      mensajeExito('Materia eliminada con éxito')
+    }
     return;
   } catch (error) {
     mensajeError(error)
@@ -299,14 +309,14 @@ async function eliminarMateria(clave) {
 
 modalEliminar = (nombre, clave)=> openModal(`
   <div>
-    <h2>¿Estas seguro de eliminar ${nombre}?</h2>
-    <p>Esta acción tambien eliminara los grupos añadidos de esta materia</p>
+    <h2>¿Estás  seguro de eliminar ${nombre}?</h2>
+    <p>Esta acción también eliminará los grupos añadidos de esta materia.</p>
   </div>
   <div>
     <button class="boton-gris" onclick="closeModal()">
       Cancelar
     </button>
-    <button class="boton-rojo" onclick="eliminarMateria('${clave}')">
+    <button class="boton-rojo" onclick="eliminarMateria('${clave}');closeModal()">
       Eliminar
     </button>
   </div>
