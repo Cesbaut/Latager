@@ -6,7 +6,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import re
-from horarios.models import Materia, grupo
+from horarios.models import Materia
+from horarios.models import grupo as Grupo
+import requests
+from bs4 import BeautifulSoup
 
 def configurar_navegador(headless=True):
     """Configura las opciones del navegador para Selenium."""
@@ -48,39 +51,73 @@ def calificacionProfesor(nombre):
     finally:
         driver.quit()
 
-def inicio(numero):
-    driver = configurar_navegador(headless=True)
-    driver.implicitly_wait(5)
-    driver.get('https://www.ssa.ingenieria.unam.mx/horarios.html')
-    driver.find_element(By.XPATH, "//input[@id='clave']").send_keys(numero)
-    driver.find_element(By.XPATH, "//button[@id='buscar']").click()
-    clases = driver.find_elements(By.XPATH, '//tbody')[1:]  # Ignorar encabezado
-    lista = []
-    for clase in clases:
-        if not clase.text.strip():
-            continue
+def inicio(id):
+    materia = Materia.objects.get(clave=id)
+    print(f"Actualizando materia con ID: {materia.id}")
+    
+    url = f"https://www.ssa.ingenieria.unam.mx/cj/tmp/programacion_horarios/{id}.html"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
+    }
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, "html.parser")
+    
+    table = soup.find('table', class_='table table-horarios-custom')
+    
+    if not table:
+        print('No se encontró la tabla de horarios.')
+    
+    tbodies = table.find_all('tbody')
+    
+    for tbody in tbodies:
+        filas = tbody.find_all('tr')
+        
+    for fila in filas:
         try:
-            datos = clase.find_elements(By.XPATH, './tr/td')
-            texto_celdas = [dato.text for dato in datos]
+            datos = fila.find_all('td')
+            texto_celdas = [dato.text.strip() for dato in datos]
+            
+            if len(texto_celdas) < 9:
+                print("Fila con datos incompletos, omitiendo:", texto_celdas)
+                continue
+            
             texto_celdas[2] = re.sub(r'\n.*', '', texto_celdas[2]).strip()
             
-            try:
-                materia_existente = grupo.objects.get(grupo=texto_celdas[1],nombre=texto_celdas[2],horas=texto_celdas[4],dias=texto_celdas[5])
-                
-                print("El profesor ya existe")
-            except:
-                grupo.objects.create(
-                    materia=Materia.objects.get(clave=int(texto_celdas[0])),
-                    grupo=texto_celdas[1],
+            grupo_existente = Grupo.objects.filter(
+                materia=materia,
+                grupo=int(texto_celdas[1]),
+            ).first()
+
+            if grupo_existente:
+                grupo_existente.grupo = int(texto_celdas[1])
+                grupo_existente.nombre = texto_celdas[2]
+                grupo_existente.tipo = texto_celdas[3]
+                grupo_existente.horas = texto_celdas[4]
+                grupo_existente.dias = texto_celdas[5]
+                grupo_existente.salon = texto_celdas[6]
+                grupo_existente.cupo = int(texto_celdas[8])
+
+                if grupo_existente.calificacion == 0.0:
+                    grupo_existente.calificacion = calificacionProfesor(texto_celdas[2])
+
+                grupo_existente.save()
+                print(f"Cupo actualizado para el grupo {texto_celdas[1]} de {materia.nombre}.")
+            else:
+                grupo_existente = Grupo.objects.create(
+                    materia=materia,
+                    grupo=int(texto_celdas[1]),
                     nombre=texto_celdas[2],
                     tipo=texto_celdas[3],
                     horas=texto_celdas[4],
                     dias=texto_celdas[5],
                     salon=texto_celdas[6],
-                    cupo=int(texto_celdas[7]),
+                    cupo=int(texto_celdas[8]),
                     calificacion=calificacionProfesor(texto_celdas[2])
                 )
-                print("grupo agregado con exito")
+                print(f"Se añadió el grupo {texto_celdas[1]} de {materia.nombre}.")
+
         except Exception as e:
             print(f"Error al procesar la clase: {e}")
             continue

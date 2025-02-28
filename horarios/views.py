@@ -17,6 +17,8 @@ from selenium.webdriver.common.by import By
 import re
 import requests
 from bs4 import BeautifulSoup
+from django.core.cache import cache
+
     
 # Pagina principal de horarios, manda los grupos y materias que un usuario autenticado a guardado
 def horarios(request):
@@ -166,97 +168,102 @@ def guardarGrupos(request):
     except Exception as e:
         return JsonResponse({'error': f'Error inesperado: {str(e)}'}, status=500)
 
-
-# Funcion para actualizar los datos de una materia
 def actualizarMateria(request, id):
-    materia = Materia.objects.get(clave=id)
-    print(f"Actualizando materia con ID: {materia.id}")
+    lock_id = f"actualizarMateria_lock_{id}"  # Lock único por cada materia
 
-    url = f"https://www.ssa.ingenieria.unam.mx/cj/tmp/programacion_horarios/{id}.html"
+    # Intentar adquirir el lock (Si ya existe, otra petición la está ejecutando)
+    lock = cache.add(lock_id, "lock")  # NO usamos timeout
 
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
-    }
-    response = requests.get(url, headers=headers)
+    if not lock:
+        print("aca andamos apa")
+        return JsonResponse({'message': f'La materia {id} ya se está actualizando. Inténtalo más tarde.'}, status=429)
 
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, "html.parser")
+    try:
+        materia = Materia.objects.get(clave=id)
+        print(f"Actualizando materia con ID: {materia.id}")
 
-        table = soup.find('table', class_='table table-horarios-custom')
+        url = f"https://www.ssa.ingenieria.unam.mx/cj/tmp/programacion_horarios/{id}.html"
 
-        if not table:
-            return JsonResponse({'message': 'No se encontró la tabla de horarios.'}, status=404)
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
+        }
+        response = requests.get(url, headers=headers)
 
-        tbodies = table.find_all('tbody')
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, "html.parser")
+            table = soup.find('table', class_='table table-horarios-custom')
 
-        grupos_actualizados = []
+            if not table:
+                return JsonResponse({'message': 'No se encontró la tabla de horarios.'}, status=404)
 
-        for tbody in tbodies:
-            filas = tbody.find_all('tr')
+            tbodies = table.find_all('tbody')
 
-            for fila in filas:
-                try:
-                    datos = fila.find_all('td')
-                    texto_celdas = [dato.text.strip() for dato in datos]
+            for tbody in tbodies:
+                filas = tbody.find_all('tr')
 
-                    if len(texto_celdas) < 9: 
-                        print("Fila con datos incompletos, omitiendo:", texto_celdas)
-                        continue
+                for fila in filas:
+                    try:
+                        datos = fila.find_all('td')
+                        texto_celdas = [dato.text.strip() for dato in datos]
 
-                    texto_celdas[2] = re.sub(r'\n.*', '', texto_celdas[2]).strip()
+                        if len(texto_celdas) < 9: 
+                            print("Fila con datos incompletos, omitiendo:", texto_celdas)
+                            continue
 
-                    grupo_existente = Grupo.objects.filter(
-                        materia=materia,
-                        grupo=int(texto_celdas[1]),
-                    ).first()
+                        texto_celdas[2] = re.sub(r'\n.*', '', texto_celdas[2]).strip()
 
-                    if grupo_existente:
-                        grupo_existente.grupo = int(texto_celdas[1])
-                        grupo_existente.nombre = texto_celdas[2]
-                        grupo_existente.tipo = texto_celdas[3]
-                        grupo_existente.horas = texto_celdas[4]
-                        grupo_existente.dias = texto_celdas[5]
-                        grupo_existente.salon = texto_celdas[6]
-                        grupo_existente.cupo = int(texto_celdas[8])
-
-                        # if grupo_existente.calificacion == 0.0:
-                        #     grupo_existente.calificacion = calificacionProfesor(texto_celdas[2])
-
-                        grupo_existente.save()
-                        print(f"Cupo actualizado para el grupo {texto_celdas[1]} de {materia.nombre}.")
-                    else:
-                        grupo_existente = Grupo.objects.create(
+                        grupo_existente = Grupo.objects.filter(
                             materia=materia,
                             grupo=int(texto_celdas[1]),
-                            nombre=texto_celdas[2],
-                            tipo=texto_celdas[3],
-                            horas=texto_celdas[4],
-                            dias=texto_celdas[5],
-                            salon=texto_celdas[6],
-                            cupo=int(texto_celdas[8]),
-                            calificacion=calificacionProfesor(texto_celdas[2])
-                        )
-                        print(f"Se añadió el grupo {texto_celdas[1]} de {materia.nombre}.")
+                        ).first()
 
-                except Exception as e:
-                    print(f"Error al procesar la clase: {e}")
-                    continue
+                        if grupo_existente:
+                            grupo_existente.grupo = int(texto_celdas[1])
+                            grupo_existente.nombre = texto_celdas[2]
+                            grupo_existente.tipo = texto_celdas[3]
+                            grupo_existente.horas = texto_celdas[4]
+                            grupo_existente.dias = texto_celdas[5]
+                            grupo_existente.salon = texto_celdas[6]
+                            grupo_existente.cupo = int(texto_celdas[8])
 
-        materia_data = {
-            'clave': materia.clave,
-            'nombre': materia.nombre,
-            'color': materia.color.color,
-        }
-        grupos_actualizados = list(Grupo.objects.filter(materia=materia).values())
+                            # if grupo_existente.calificacion == 0.0:
+                            #     grupo_existente.calificacion = calificacionProfesor(texto_celdas[2])
 
-        materiaNueva = {id: {'grupos': grupos_actualizados, 'materia': materia_data}}
+                            grupo_existente.save()
+                            print(f"Cupo actualizado para el grupo {texto_celdas[1]} de {materia.nombre}.")
+                        else:
+                            grupo_existente = Grupo.objects.create(
+                                materia=materia,
+                                grupo=int(texto_celdas[1]),
+                                nombre=texto_celdas[2],
+                                tipo=texto_celdas[3],
+                                horas=texto_celdas[4],
+                                dias=texto_celdas[5],
+                                salon=texto_celdas[6],
+                                cupo=int(texto_celdas[8]),
+                                calificacion=calificacionProfesor(texto_celdas[2])
+                            )
+                            print(f"Se añadió el grupo {texto_celdas[1]} de {materia.nombre}.")
 
-        return JsonResponse({'message': 'Materia Actualizada', 'materiaNueva': materiaNueva})
+                    except Exception as e:
+                        print(f"Error al procesar la clase: {e}")
+                        continue
 
-    else:
-        print(f"Error {response.status_code}: No se pudo acceder a la página")
-        return JsonResponse({'message': 'No se pudo acceder a la página', 'status': response.status_code}, status=response.status_code)
+            materia_data = {
+                'clave': materia.clave,
+                'nombre': materia.nombre,
+                'color': materia.color.color,
+            }
+            grupos_actualizados = list(Grupo.objects.filter(materia=materia).values())
 
+            return JsonResponse({'message': 'Materia Actualizada', 'materiaNueva': {id: {'grupos': grupos_actualizados, 'materia': materia_data}}})
+
+        else:
+            print(f"Error {response.status_code}: No se pudo acceder a la página")
+            return JsonResponse({'message': 'No se pudo acceder a la página', 'status': response.status_code}, status=response.status_code)
+
+    finally:
+        cache.delete(lock_id)  # Liberar el lock después de la ejecución, sin importar qué pase
 
 
 #Funcion para la configuracion del navegador en selenium

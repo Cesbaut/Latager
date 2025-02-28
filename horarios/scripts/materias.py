@@ -1,16 +1,13 @@
+# Script que sube los colores y materias a la base de datos
+
 import os
 import django
-
-# Configura el entorno de Django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'latager.settings')
 django.setup()
-
 from horarios.models import Materia
 from horarios.scripts.listaAsignatura import asignatura
+from horarios.models import Color  
 
-from horarios.models import Color  # Ajusta "app" con el nombre de tu aplicación en Django
-
-# Lista de colores con nombres sugeridos
 colores = [
     {"nombre": "Rosa", "color": "#FFD1DC"},
     {"nombre": "Azul", "color": "#ADD8E6"},
@@ -21,7 +18,6 @@ colores = [
     {"nombre": "Rojo", "color": "#fcb7af"},
 ]
 
-# Guardar solo los colores que no existen en la base de datos
 for c in colores:
     if not Color.objects.filter(color=c["color"]).exists():
         Color.objects.create(nombre=c["nombre"], color=c["color"])
